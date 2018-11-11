@@ -333,7 +333,11 @@ function deleteOpponentToken(opponentMovement){
     opponentToken.removeEventListener('click', setOrigin);
     opponentToken.addEventListener('click', setDestination);
 
-    opponentToken.innerHTML = ``;
+    opponentToken.children[0].classList.add('delete');
+
+    opponentToken.addEventListener('transitionend', function(){
+        this.innerHTML = ``;
+    });  
 
 }
 

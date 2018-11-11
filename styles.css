@@ -74,11 +74,16 @@ h1 {
 }
 
 .player {
+    visibility: visible;
     border-radius: 50%;
     width: 80%;
     height: 80%;
     border: 1px solid var(--black);
     box-shadow: 1px 1px 2px var(--black);
+    opacity: 1;
+    transition: visibility 1s, opacity 0.2s ease-in;
+    -webkit-transition: visibility 1s, opacity 0.2s ease-in;
+    -moz-transition: visibility 1s, opacity 0.2s ease-in;
 }
 
 .player1 {
@@ -103,6 +108,21 @@ h1 {
 .winner {
     background: var(--yellow);
 }
+
+.delete{
+    visibility: hidden;
+    opacity: 0;
+}
+
+
+
+
+
+
+
+
+
+
 
 /* Phones */
 @media only screen and (max-width: 600px) {
