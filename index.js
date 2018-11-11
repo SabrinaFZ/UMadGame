@@ -394,6 +394,7 @@ function checkIfWinner(player){
 
 function finishGame(){
     alert(`Congratulations ${turn} you won!` );
+    location.reload();
     return;
 }
 
