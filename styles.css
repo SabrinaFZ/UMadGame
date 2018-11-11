@@ -1,0 +1,54 @@
+:root{
+    --black: #262626;
+    --white: #EFEFEF;
+    --board: #B89595;
+    --red: #DA4848;
+    --yellow: #FFCE33;
+}
+
+.board {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    grid-template-rows: repeat(8, 1fr);
+    border: 10px solid var(--board);
+    width: 500px;
+    height: 500px;
+}
+
+.box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.black {
+    background: var(--black);   
+}
+
+.white {
+    background: var(--white);
+}
+
+.player {
+    border-radius: 50%;
+    width: 80%;
+    height: 80%;
+    border: 1px solid var(--black);
+}
+
+.player1 {
+    background: var(--red);
+}
+
+.player2 {
+    background: var(--white);
+}
+
+.clicked {
+    border: 3px solid var(--yellow);
+}
+
+.clicked .player {
+    width: 100%;
+    height: 100%;   
+}
