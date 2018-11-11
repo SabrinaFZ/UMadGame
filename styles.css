@@ -1,9 +1,53 @@
+@font-face{
+    font-family: 'Permanent Marker';
+    font-style: normal;
+    font-weight: 400;
+    src: url(./assets/permanent-marker-v7-latin-regular.woff2);
+}
+
+@keyframes shake {
+  10%, 90% {
+    transform: translate3d(-1px, 0, 0);
+  }
+  
+  20%, 80% {
+    transform: translate3d(2px, 0, 0);
+  }
+
+  30%, 50%, 70% {
+    transform: translate3d(-4px, 0, 0);
+  }
+
+  40%, 60% {
+    transform: translate3d(4px, 0, 0);
+  }
+}
+
 :root{
     --black: #262626;
-    --white: #EFEFEF;
+    --white: rgb(252, 243, 243);
     --board: #B89595;
     --red: #DA4848;
     --yellow: #FFCE33;
+    --background:  linear-gradient(to right, rgba(255,212,212,1) 0%, rgba(255,227,219,1) 48%, rgba(255,244,227,1) 100%);
+}
+
+.shake{
+    animation: shake 0.82s cubic-bezier(.36,.07,.19,.97) both;
+    transform: translate3d(0, 0, 0);
+    backface-visibility: hidden;
+    perspective: 1000px;
+}
+
+body {
+    background: var(--background);
+    font-family: 'Permanent Marker'; 
+    font-size: 36px;
+}
+
+h1 {
+    font-family: 'Permanent Marker';
+    text-align: center;
 }
 
 .board {
@@ -11,8 +55,8 @@
     grid-template-columns: repeat(8, 1fr);
     grid-template-rows: repeat(8, 1fr);
     border: 10px solid var(--board);
-    width: 500px;
-    height: 500px;
+    margin: 0 auto;
+    box-shadow: 1px 1px 5px var(--black);
 }
 
 .box {
@@ -34,6 +78,7 @@
     width: 80%;
     height: 80%;
     border: 1px solid var(--black);
+    box-shadow: 1px 1px 2px var(--black);
 }
 
 .player1 {
@@ -46,9 +91,48 @@
 
 .clicked {
     border: 3px solid var(--yellow);
+    box-shadow: -1px 1px 5px var(--black);
+    z-index: 1;
 }
 
 .clicked .player {
     width: 100%;
-    height: 100%;   
+    height: 100%;
 }
+
+.winner {
+    background: var(--yellow);
+}
+
+/* Phones */
+@media only screen and (max-width: 600px) {
+    .board{
+        width: 90%;
+        height: 350px;       
+    }
+}
+
+/* Small devices (portrait tablets and large phones, 600px and up) */
+@media only screen and (min-width: 600px) and (max-width: 768px){
+    .board{
+        width: 90%; 
+        min-height: 600px;          
+    }
+
+} 
+
+/* Medium devices (landscape tablets, 768px and up) */
+@media only screen and (min-width: 768px) and (max-width: 992px){
+    .board{
+        width: 90%;
+        min-height: 600px;       
+    }
+
+} 
+
+@media only screen and (min-width: 992px) {
+    .board{
+        width: 500px;
+        height: 500px;     
+    }
+} 

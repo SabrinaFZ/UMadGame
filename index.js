@@ -184,47 +184,59 @@ function moveToken(){
         moveForward = -1;
     }
 
-    //move forward
-    if (currentPlayer.origin.row + moveForward === currentPlayer.destination.row && currentPlayer.origin.column === currentPlayer.destination.column){
-        //don't move if opponent is in front of my token
-        if (!checkOpponentPosition(opponentPlayer, currentPlayer)){
-            paintNewToken(currentPlayer);
-        }      
-    }
+    if (checkIfValidPosition(currentPlayer)) {
+        currentPlayer.addMovements(destination);
 
-    //move diagonally to the left 
-    else if (currentPlayer.origin.column - 1 === currentPlayer.destination.column){
-        //don't move if opponent is in diagonally to the left
-        if (!checkOpponentPosition(opponentPlayer, currentPlayer)) {
-            paintNewToken(currentPlayer);
+        //move forward
+        if (currentPlayer.origin.row + moveForward === currentPlayer.destination.row && currentPlayer.origin.column === currentPlayer.destination.column) {
+            //don't move if opponent is in front of my token
+            if (!checkOpponentPosition(opponentPlayer, currentPlayer)) {
+                paintNewToken(currentPlayer);
+            }
         }
-    }
 
-    //move diagonally to the right
-    else if (currentPlayer.origin.column + 1 === currentPlayer.destination.column) {
-        //don't move if opponent is in diagonally to the right
-        if (!checkOpponentPosition(opponentPlayer, currentPlayer)) {
-            paintNewToken(currentPlayer);
-        }      
-    } 
-    
-    //eat my opponent if in front, diagonally to the left or right of my token, (I have to move two more steps)
-    else {
-        eatOpponent(opponentPlayer, currentPlayer);
-    }
+        //move diagonally to the left 
+        else if (currentPlayer.origin.column - 1 === currentPlayer.destination.column) {
+            //don't move if opponent is in diagonally to the left
+            if (!checkOpponentPosition(opponentPlayer, currentPlayer)) {
+                paintNewToken(currentPlayer);
+            }
+        }
+
+        //move diagonally to the right
+        else if (currentPlayer.origin.column + 1 === currentPlayer.destination.column) {
+            //don't move if opponent is in diagonally to the right
+            if (!checkOpponentPosition(opponentPlayer, currentPlayer)) {
+                paintNewToken(currentPlayer);
+            }
+        }
+
+        //eat my opponent if in front, diagonally to the left or right of my token, (I have to move two more steps)
+        else {
+            eatOpponent(opponentPlayer, currentPlayer);
+        }
+    }  
     
 }
 
 function checkIfValidPosition(currentPlayer){
-    let isValid = true;
+    let isValid = true,
+        board = document.querySelector('.board');
+
+    board.addEventListener('animationend', function(e){
+        this.classList.remove('shake');
+    });
+    
     if(currentPlayer.playerName === 'player1'){
         if (currentPlayer.origin.row === currentPlayer.destination.row || currentPlayer.origin.row > currentPlayer.destination.row) {
-            alert('You only can move forward, diagonally to the left and diagonally to the right ');
+            board.classList.add('shake');
+            //alert('You only can move forward, diagonally to the left and diagonally to the right ');
             isValid = false;
         }
     } else {
         if (currentPlayer.origin.row === currentPlayer.destination.row || currentPlayer.origin.row < currentPlayer.destination.row) {
-            alert('You only can move forward, diagonally to the left and diagonally to the right ');
+            board.classList.add('shake');
+            //alert('You only can move forward, diagonally to the left and diagonally to the right ');
             isValid = false;
         }
     }
@@ -236,10 +248,6 @@ function checkIfValidPosition(currentPlayer){
 function setPlayerData(currentPlayer){
     currentPlayer.origin = origin;
     currentPlayer.destination = destination;
-
-    if(checkIfValidPosition(currentPlayer)){
-        currentPlayer.addMovements(destination);
-    }
     
 }
 
@@ -380,15 +388,24 @@ function nextTurn(){
 }
 
 function checkIfWinner(player){
+    
     if(turn === 'player1'){
         if(player.destination.row === 8){
+            paintWinner(player);
             finishGame();                   
         }
     } else {
         if (player.destination.row === 1) {
+            paintWinner(player);
             finishGame();
         }
     }
+}
+
+function paintWinner(player){
+    let boxDestination = document.querySelector(`[data-row="${player.destination.row}"][data-column="${player.destination.column}"] `);
+
+    boxDestination.children[0].classList.add('winner');
 }
 
 
