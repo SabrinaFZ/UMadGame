@@ -27,27 +27,31 @@ function changeBackgroundColor(){
 }
 
 function addClickEvent(){
+    this.setOrigin = this.setOrigin.bind(this);
+    this.setDestination = this.setDestination.bind(this);
+
     boxes.forEach(function(box, index){
         if (box.children.length > 0 && box.children[0].classList.contains(turn)){
-            box.addEventListener('click', setOrigin);
+            box.addEventListener('click', this.setOrigin);
         }
 
         if (box.children.length === 0){
-            box.addEventListener('click', setDestination);
+            box.addEventListener('click', this.setDestination);
         }
-    });
+    }.bind(this));
 }
 
 function removeClickEvent() {
+
     boxes.forEach(function (box, index) {
         if (box.children.length > 0 && box.children[0].classList.contains(turn)) {
-            box.removeEventListener('click', setOrigin);
+            box.removeEventListener('click', this.setOrigin);
         }
 
         if (box.children.length === 0) {
-            box.removeEventListener('click', setDestination);
+            box.removeEventListener('click', this.setDestination);
         }
-    });
+    }.bind(this));
 
 
 }
@@ -138,24 +142,24 @@ function setOrigin(e){
     e.preventDefault();
     e.stopPropagation();
    
-    if(this.children.length === 0 ){
+    if(e.currentTarget.children.length === 0 ){
         return;
     }
     
-    var previousClicked = document.getElementsByClassName('clicked');
+    let previousClicked = document.getElementsByClassName('clicked');
     
     if(previousClicked.length > 0) {
         previousClicked[0].classList.remove('clicked');
     }
 
-    if (previousClicked === this || previousClicked.length === 0) {
-        this.classList.toggle('clicked');
+    if (previousClicked === e.target || previousClicked.length === 0) {
+        e.currentTarget.classList.toggle('clicked');
     }
     
-    if(this.classList.contains('clicked')){
+    if (e.currentTarget.classList.contains('clicked')){
         origin = {
-            row: parseInt(this.dataset.row),
-            column: parseInt(this.dataset.column)
+            row: parseInt(e.currentTarget.dataset.row),
+            column: parseInt(e.currentTarget.dataset.column)
         }
     }
     
@@ -166,12 +170,12 @@ function setDestination(e){
     e.stopPropagation();
     
     destination = {
-        row: parseInt(this.dataset.row),
-        column: parseInt(this.dataset.column)
+        row: parseInt(e.currentTarget.dataset.row),
+        column: parseInt(e.currentTarget.dataset.column)
     }
 
     if(origin !== {}){
-        moveToken();
+        this.moveToken();
     }  
 }
 
@@ -180,7 +184,7 @@ function moveToken(){
     let currentPlayer, opponentPlayer, moveForward;
 
     if(turn === 'player1'){
-        setPlayerData(player1);
+        this.setPlayerData(player1);
 
         currentPlayer = player1;
         opponentPlayer = player2;
@@ -189,7 +193,7 @@ function moveToken(){
 
     } 
     else{
-        setPlayerData(player2);
+        this.setPlayerData(player2);
 
         currentPlayer = player2;
         opponentPlayer = player1;
@@ -197,36 +201,36 @@ function moveToken(){
         moveForward = -1;
     }
 
-    if (checkIfValidPosition(currentPlayer)) {
+    if (this.checkIfValidPosition(currentPlayer)) {
         currentPlayer.addMovements(destination);
 
         //move forward
         if (currentPlayer.origin.row + moveForward === currentPlayer.destination.row && currentPlayer.origin.column === currentPlayer.destination.column) {
             //don't move if opponent is in front of my token
-            if (!checkOpponentPosition(opponentPlayer, currentPlayer)) {
-                paintNewToken(currentPlayer);
+            if (!this.checkOpponentPosition(opponentPlayer, currentPlayer)) {
+                this.paintNewToken(currentPlayer);
             }
         }
 
         //move diagonally to the left 
         else if (currentPlayer.origin.column - 1 === currentPlayer.destination.column) {
             //don't move if opponent is in diagonally to the left
-            if (!checkOpponentPosition(opponentPlayer, currentPlayer)) {
-                paintNewToken(currentPlayer);
+            if (!this.checkOpponentPosition(opponentPlayer, currentPlayer)) {
+                this.paintNewToken(currentPlayer);
             }
         }
 
         //move diagonally to the right
         else if (currentPlayer.origin.column + 1 === currentPlayer.destination.column) {
             //don't move if opponent is in diagonally to the right
-            if (!checkOpponentPosition(opponentPlayer, currentPlayer)) {
-                paintNewToken(currentPlayer);
+            if (!this.checkOpponentPosition(opponentPlayer, currentPlayer)) {
+                this.paintNewToken(currentPlayer);
             }
         }
 
         //eat my opponent if in front, diagonally to the left or right of my token, (I have to move two more steps)
         else {
-            eatOpponent(opponentPlayer, currentPlayer);
+            this.eatOpponent(opponentPlayer, currentPlayer);
         }
     }  
     
@@ -237,19 +241,17 @@ function checkIfValidPosition(currentPlayer){
         board = document.querySelector('.board');
 
     board.addEventListener('animationend', function(e){
-        this.classList.remove('shake');
+        board.classList.remove('shake');
     });
     
     if(currentPlayer.playerName === 'player1'){
         if (currentPlayer.origin.row === currentPlayer.destination.row || currentPlayer.origin.row > currentPlayer.destination.row) {
             board.classList.add('shake');
-            //alert('You only can move forward, diagonally to the left and diagonally to the right ');
             isValid = false;
         }
     } else {
         if (currentPlayer.origin.row === currentPlayer.destination.row || currentPlayer.origin.row < currentPlayer.destination.row) {
             board.classList.add('shake');
-            //alert('You only can move forward, diagonally to the left and diagonally to the right ');
             isValid = false;
         }
     }
@@ -299,10 +301,10 @@ function eatOpponent(opponentPlayer, currentPlayer){
         if (opponentPlayerMovements.length > 0) {
             opponentPlayerMovements.forEach(function (movement, index) {
                 if (movement.position.row === currentPlayer.origin.row + moveForward && movement.position.column === currentPlayer.origin.column) {
-                    eatOpponentToken(movement, opponentPlayerMovements, index, opponentPlayer, currentPlayer);
+                    this.eatOpponentToken(movement, opponentPlayerMovements, index, opponentPlayer, currentPlayer);
                     return;
                 }
-            });
+            }.bind(this));
         }
     }
 
@@ -312,10 +314,10 @@ function eatOpponent(opponentPlayer, currentPlayer){
         if (opponentPlayerMovements.length > 0) {
             opponentPlayerMovements.forEach(function (movement, index) {
                 if (movement.position.row === currentPlayer.origin.row + moveForward && movement.position.column === currentPlayer.origin.column + moveRight) {
-                    eatOpponentToken(movement, opponentPlayerMovements, index, opponentPlayer, currentPlayer);
+                    this.eatOpponentToken(movement, opponentPlayerMovements, index, opponentPlayer, currentPlayer);
                     return;
                 }
-            });
+            }.bind(this));
         }
     }
 
@@ -325,31 +327,31 @@ function eatOpponent(opponentPlayer, currentPlayer){
         if (opponentPlayerMovements.length > 0) {
             opponentPlayerMovements.forEach(function (movement, index) {
                 if (movement.position.row === currentPlayer.origin.row + moveForward && movement.position.column === currentPlayer.origin.column + moveLeft) {
-                    eatOpponentToken(movement, opponentPlayerMovements, index, opponentPlayer, currentPlayer);
+                    this.eatOpponentToken(movement, opponentPlayerMovements, index, opponentPlayer, currentPlayer);
                     return;
                 }
-            });
+            }.bind(this));
         }
     }
 }
 
 function eatOpponentToken(movement, opponentPlayerMovements, positionMovement, opponentPlayer, currentPlayer){
     opponentPlayerMovements.splice(positionMovement, 1);
-    deleteOpponentToken(movement);
-    reduceOpponentTokens(opponentPlayer);
-    paintNewToken(currentPlayer);
+    this.deleteOpponentToken(movement);
+    this.reduceOpponentTokens(opponentPlayer);
+    this.paintNewToken(currentPlayer);
 }
 
 function deleteOpponentToken(opponentMovement){
-    let opponentToken = document.querySelector(`[data-row="${opponentMovement.position.row}"][data-column="${opponentMovement.position.column}"] `);  
+    let opponentToken = document.querySelector(`[data-row="${opponentMovement.position.row}"][data-column="${opponentMovement.position.column}"] `);
 
-    opponentToken.removeEventListener('click', setOrigin);
-    opponentToken.addEventListener('click', setDestination);
+    opponentToken.removeEventListener('click', this.setOrigin);
+    opponentToken.addEventListener('click', this.setDestination);
 
     opponentToken.children[0].classList.add('delete');
 
     opponentToken.addEventListener('transitionend', function(){
-        this.innerHTML = ``;
+        opponentToken.innerHTML = ``;
     });  
 
 }
@@ -358,7 +360,7 @@ function reduceOpponentTokens(opponent){
     opponent.reduceTokens();
 
     if(opponent.getTokenCounter === 0){
-        finishGame();
+        this.finishGame();
     }
 }
 
@@ -371,21 +373,21 @@ function paintNewToken(player){
 
     boxOrigin.classList.remove('clicked');
 
-    removeBoxEvents(boxDestination, boxOrigin);
+    this.removeBoxEvents(boxDestination, boxOrigin);
 
     player.removeMovement(player.origin);
 
-    checkIfWinner(player);
+    this.checkIfWinner(player);
     
-    nextTurn();
+    this.nextTurn();
 }
 
 function removeBoxEvents (boxDestination, boxOrigin){
-    boxOrigin.removeEventListener('click', setOrigin);
-    boxDestination.removeEventListener('click', setDestination);
+    boxOrigin.removeEventListener('click', this.setOrigin);
+    boxDestination.removeEventListener('click', this.setDestination);
 
-    boxOrigin.addEventListener('click', setDestination);
-    boxDestination.addEventListener('click', setOrigin);
+    boxOrigin.addEventListener('click', this.setDestination);
+    boxDestination.addEventListener('click', this.setOrigin);
 }
 
 function nextTurn(){
@@ -393,7 +395,7 @@ function nextTurn(){
     origin = {};
     destination = {};
 
-    removeClickEvent();
+    this.removeClickEvent();
 
     if(turn === 'player1'){      
         turn = 'player2';
@@ -401,22 +403,22 @@ function nextTurn(){
         turn = 'player1';        
     }
 
-    addClickEvent();
+    this.addClickEvent();
 
-    changeBackgroundColor();
+    this.changeBackgroundColor();
 }
 
 function checkIfWinner(player){
     
     if(turn === 'player1'){
         if(player.destination.row === 8){
-            paintWinner(player);
-            finishGame(player1, player2);                   
+            this.paintWinner(player);
+            this.finishGame(player1, player2);                   
         }
     } else {
         if (player.destination.row === 1) {
-            paintWinner(player);
-            finishGame(player2, player1);
+            this.paintWinner(player);
+            this.finishGame(player2, player1);
         }
     }
 }
@@ -427,13 +429,13 @@ function paintWinner(player){
     boxDestination.children[0].classList.add('winner');
 }
 
-
 function finishGame(winner, loser){
-    //alert(`Congratulations ${turn} you won!` );
     let board = document.querySelector('.board');
     board.classList.add('flip-board');
+
     let backBoard = document.querySelector('.back-board');
     backBoard.innerHTML = `<p> Congratulations, </br> ${winner.playerName} won</p><p>sorry ${loser.playerName}, </br>u mad? </p> <button>Play Again</button>`
+    
     let button = document.querySelector('button');
     button.addEventListener('click', function(){
         location.reload();
