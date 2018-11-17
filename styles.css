@@ -182,14 +182,17 @@ h1 {
 /* Phones */
 @media only screen and (max-width: 600px) {
 
+    body {
+        margin: 10px;
+        margin: 0 auto;
+    }
 
     .board{
         width: 100%;
-        height: 350px;
     }
 
-    .front-board, .back-board{
-        width: 94%;
+    .front-board{
+        max-width: 97%;
     }
 
     .back-board{
@@ -197,19 +200,19 @@ h1 {
     }
 
     .back-board button{
-        font-size: 24px;
+        font-size: 20px;
     }
 }
 
 /* Small devices (portrait tablets and large phones, 600px and up) */
 @media only screen and (min-width: 600px) and (max-width: 768px){
+
     .board{
-        width: 90%; 
-        min-height: 600px;          
+        width: 100%;         
     }
 
-    .front-board, .back-board{
-        width: 94%;
+    .front-board{
+        width: 97%;
     }
 
     .back-board{
@@ -225,12 +228,11 @@ h1 {
 /* Medium devices (landscape tablets, 768px and up) */
 @media only screen and (min-width: 768px) and (max-width: 992px){
     .board{
-        width: 90%;
-        min-height: 600px;       
+        width: 100%;
     }
 
-     .front-board, .back-board{
-        width: 96%;
+    .front-board, .back-board{
+        width: 97%;
     }
 
     .back-board{
