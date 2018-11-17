@@ -12,10 +12,23 @@ var origin = {},
 this.paintBoard();
 this.paintBoxes();
 this.addClickEvent('player1');
+this.changeBackgroundColor();
 
-function addClickEvent(turnText){
+function changeBackgroundColor(){
+    let body = document.querySelector('body');
+    if(turn === 'player1'){
+        body.classList.add('background-player1');
+        body.classList.remove('background-player2');
+    } else {
+        body.classList.add('background-player2');
+        body.classList.remove('background-player1');
+    }
+    
+}
+
+function addClickEvent(){
     boxes.forEach(function(box, index){
-        if (box.children.length > 0 && box.children[0].classList.contains(turnText)){
+        if (box.children.length > 0 && box.children[0].classList.contains(turn)){
             box.addEventListener('click', setOrigin);
         }
 
@@ -25,9 +38,9 @@ function addClickEvent(turnText){
     });
 }
 
-function removeClickEvent(turnText) {
+function removeClickEvent() {
     boxes.forEach(function (box, index) {
-        if (box.children.length > 0 && box.children[0].classList.contains(turnText)) {
+        if (box.children.length > 0 && box.children[0].classList.contains(turn)) {
             box.removeEventListener('click', setOrigin);
         }
 
@@ -380,7 +393,7 @@ function nextTurn(){
     origin = {};
     destination = {};
 
-    removeClickEvent(turn);
+    removeClickEvent();
 
     if(turn === 'player1'){      
         turn = 'player2';
@@ -388,7 +401,9 @@ function nextTurn(){
         turn = 'player1';        
     }
 
-    addClickEvent(turn);
+    addClickEvent();
+
+    changeBackgroundColor();
 }
 
 function checkIfWinner(player){
@@ -396,12 +411,12 @@ function checkIfWinner(player){
     if(turn === 'player1'){
         if(player.destination.row === 8){
             paintWinner(player);
-            finishGame();                   
+            finishGame(player1, player2);                   
         }
     } else {
         if (player.destination.row === 1) {
             paintWinner(player);
-            finishGame();
+            finishGame(player2, player1);
         }
     }
 }
@@ -413,9 +428,16 @@ function paintWinner(player){
 }
 
 
-function finishGame(){
-    alert(`Congratulations ${turn} you won!` );
-    location.reload();
+function finishGame(winner, loser){
+    //alert(`Congratulations ${turn} you won!` );
+    let board = document.querySelector('.board');
+    board.classList.add('flip-board');
+    let backBoard = document.querySelector('.back-board');
+    backBoard.innerHTML = `<p> Congratulations, </br> ${winner.playerName} won</p><p>sorry ${loser.playerName}, </br>u mad? </p> <button>Play Again</button>`
+    let button = document.querySelector('button');
+    button.addEventListener('click', function(){
+        location.reload();
+    });
     return;
 }
 
@@ -452,6 +474,7 @@ function Player(playerName, origin, destination){
     this.reduceTokens = function(){
         tokenCounter--;
     }
+
 }
 
 

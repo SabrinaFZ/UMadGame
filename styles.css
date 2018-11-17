@@ -29,18 +29,12 @@
     --board: #B89595;
     --red: #DA4848;
     --yellow: #FFCE33;
-    --background:  linear-gradient(to right, rgba(255,212,212,1) 0%, rgba(255,227,219,1) 48%, rgba(255,244,227,1) 100%);
-}
-
-.shake{
-    animation: shake 0.82s cubic-bezier(.36,.07,.19,.97) both;
-    transform: translate3d(0, 0, 0);
-    backface-visibility: hidden;
-    perspective: 1000px;
+    --blue: #A3EDFD;
+    --background-player1:  linear-gradient(to right, rgba(255,212,212,1) 0%, rgba(255,227,219,1) 48%, rgba(255,244,227,1) 100%);
+    --background-player2:  linear-gradient(to right, rgba(232,235,250,1) 0%, rgba(163,236,253,1) 100%);
 }
 
 body {
-    background: var(--background);
     font-family: 'Permanent Marker'; 
     font-size: 36px;
 }
@@ -50,13 +44,72 @@ h1 {
     text-align: center;
 }
 
+.background-player1{
+    background: var(--background-player1);
+}
+
+.background-player2{
+    background: var(--background-player2);
+}
+
 .board {
+    perspective: 1000px;
+    margin: 0 auto;
+    width: 500px;
+    height: 500px;
+}
+
+.inner-board {
+    width: 100%;
+    height: 100%;
+    transition: transform 1s;
+    transform-style: preserve-3d;
+    position: relative;
+}
+
+.flip-board .inner-board {
+    transform: rotateY(180deg);
+}
+
+.front-board, .back-board {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border: 10px solid var(--board);
+    box-shadow: 1px 1px 5px var(--black);
+    backface-visibility: hidden;
+}
+
+.front-board {
     display: grid;
     grid-template-columns: repeat(8, 1fr);
     grid-template-rows: repeat(8, 1fr);
-    border: 10px solid var(--board);
+}
+
+.back-board {
+    display: block;
+    background: var(--board);
+    transform: rotateY(180deg);
+    text-align: center;
+    font-size: 48px;
+    
+}
+
+.back-board button {
+    display: block;
+    
+    border-radius: 10px;
+    padding: 10px;
+    font-family: 'Permanent Marker';
+    background: linear-gradient(to right, rgba(255,251,207,1) 0%, rgba(254,182,69,1) 100%);
+    box-shadow: 1px 1px 2px var(--black);
+    width: 50%;
+    margin-bottom: 10px;
     margin: 0 auto;
-    box-shadow: 1px 1px 5px var(--black);
+}
+
+.back-board button:hover{
+    opacity: 0.8;
 }
 
 .box {
@@ -91,7 +144,7 @@ h1 {
 }
 
 .player2 {
-    background: var(--white);
+    background: var(--blue);
 }
 
 .clicked {
@@ -114,21 +167,37 @@ h1 {
     opacity: 0;
 }
 
-
-
-
-
-
-
-
-
+.shake{
+    animation: shake 0.82s cubic-bezier(.36,.07,.19,.97) both;
+    -webkit-animation: shake 0.82s cubic-bezier(.36,.07,.19,.97) both;
+    -moz-animation: shake 0.82s cubic-bezier(.36,.07,.19,.97) both;
+    transform: translate3d(0, 0, 0);
+    -webkit-transform: translate3d(0, 0, 0);
+    -moz-transform: translate3d(0, 0, 0);
+    backface-visibility: hidden;
+    perspective: 1000px;
+}
 
 
 /* Phones */
 @media only screen and (max-width: 600px) {
+
+
     .board{
-        width: 90%;
-        height: 350px;       
+        width: 100%;
+        height: 350px;
+    }
+
+    .front-board, .back-board{
+        width: 94%;
+    }
+
+    .back-board{
+        font-size: 28px;
+    }
+
+    .back-board button{
+        font-size: 24px;
     }
 }
 
@@ -137,6 +206,18 @@ h1 {
     .board{
         width: 90%; 
         min-height: 600px;          
+    }
+
+    .front-board, .back-board{
+        width: 94%;
+    }
+
+    .back-board{
+        font-size: 48px;
+    }
+
+    .back-board button{
+        font-size: 28px;
     }
 
 } 
@@ -148,6 +229,17 @@ h1 {
         min-height: 600px;       
     }
 
+     .front-board, .back-board{
+        width: 96%;
+    }
+
+    .back-board{
+        font-size: 48px;
+    }
+
+    .back-board button{
+        font-size: 28px;
+    }
 } 
 
 @media only screen and (min-width: 992px) {
@@ -155,4 +247,13 @@ h1 {
         width: 500px;
         height: 500px;     
     }
+
+    .back-board{
+        font-size: 48px;
+    }
+
+    .back-board button{
+        font-size: 28px;
+    }
+
 } 
